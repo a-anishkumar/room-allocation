@@ -1,0 +1,16 @@
+/* src/components/RoleBanner.css */
+.role-banner {
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 8px;
+  color: white;
+}
+
+.role-banner.admin {
+  background-color: #c0392b; /* red for admin */
+}
+
+.role-banner.student {
+  background-color: #2980b9; /* blue for student */
+}

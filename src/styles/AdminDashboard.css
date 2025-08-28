@@ -1,0 +1,392 @@
+/* src/styles/AdminDashboard.css */
+
+/* ---------- GENERAL DASHBOARD ---------- */
+.admin-dashboard {
+  font-family: "Segoe UI", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  padding: 24px 32px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+  min-height: 100vh;
+  color: #2d3748;
+}
+
+.admin-header {
+  text-align: center;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.admin-header h1 {
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
+.admin-header p {
+  color: #718096;
+  font-size: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* ---------- TABS ---------- */
+.admin-tabs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 28px;
+  background: white;
+  padding: 6px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  max-width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.admin-tabs button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  background-color: transparent;
+  color: #718096;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-tabs button::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 3px;
+  background-color: #4a90e2;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+  border-radius: 3px 3px 0 0;
+}
+
+.admin-tabs button:hover {
+  color: #4a90e2;
+  background-color: rgba(74, 144, 226, 0.05);
+}
+
+.admin-tabs button.active {
+  color: #4a90e2;
+  background-color: rgba(74, 144, 226, 0.1);
+}
+
+.admin-tabs button.active::after {
+  width: 70%;
+}
+
+/* ---------- TAB CONTENT ---------- */
+.admin-tab-content {
+  background-color: white;
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  margin-bottom: 32px;
+  transition: all 0.3s ease;
+}
+
+.admin-tab-content:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* ---------- TABLE STYLING ---------- */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 16px;
+}
+
+thead {
+  background-color: #f8fafc;
+}
+
+thead th {
+  text-align: left;
+  padding: 16px;
+  font-weight: 600;
+  color: #4a5568;
+  border-bottom: 2px solid #e2e8f0;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+tbody td {
+  padding: 16px;
+  border-bottom: 1px solid #edf2f7;
+  vertical-align: middle;
+  transition: background-color 0.2s ease;
+}
+
+tbody tr {
+  transition: all 0.2s ease;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr:hover {
+  background-color: #f8fafc;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+/* Button base styles */
+button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ---------- ACTION BUTTON COLORS ---------- */
+button.confirmed, 
+button.admin-btn-confirm {
+  background: linear-gradient(to right, #38a169, #48bb78);
+  color: white;
+}
+
+button.rejected, 
+button.admin-btn-reject {
+  background: linear-gradient(to right, #e53e3e, #f56565);
+  color: white;
+}
+
+button.resolve {
+  background: linear-gradient(to right, #ed8936, #f6ad55);
+  color: white;
+}
+
+/* ---------- INPUT & SEARCH ---------- */
+input[type="text"], 
+select {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 16px;
+  width: 100%;
+  max-width: 320px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+
+input[type="text"]:focus, 
+select:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+}
+
+/* ---------- ROOM GRID (Admin View) ---------- */
+.vacant-rooms {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.vacant-rooms h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 8px;
+}
+
+.vacant-rooms .room-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.room-grid .room-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px;
+  min-width: 80px;
+  text-align: center;
+  font-size: 0.9rem;
+  cursor: default;
+  position: relative;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.room-grid .room-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.room-grid .room-card.free {
+  background-color: #f0fff4;
+  border-color: #9ae6b4;
+  color: #38a169;
+}
+
+.room-grid .room-card.occupied {
+  background-color: #fff5f5;
+  border-color: #fc8181;
+  color: #e53e3e;
+}
+
+/* Status indicators */
+.status-indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.status-confirmed {
+  background-color: #38a169;
+}
+
+.status-pending {
+  background-color: #d69e2e;
+}
+
+.status-rejected {
+  background-color: #e53e3e;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 968px) {
+  .admin-dashboard {
+    padding: 16px;
+  }
+  
+  .admin-tab-content {
+    padding: 20px;
+  }
+  
+  thead {
+    display: none;
+  }
+  
+  tbody tr {
+    display: block;
+    margin-bottom: 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+  }
+  
+  tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #edf2f7;
+    text-align: right;
+  }
+  
+  tbody td:last-child {
+    border-bottom: none;
+  }
+  
+  tbody td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    text-align: left;
+    color: #4a5568;
+  }
+  
+  .admin-tabs {
+    flex-direction: row;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding: 4px;
+  }
+  
+  .admin-tabs button {
+    white-space: nowrap;
+    font-size: 0.9rem;
+    padding: 10px 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .admin-tab-content {
+    padding: 16px;
+  }
+  
+  input[type="text"], 
+  select {
+    max-width: 100%;
+  }
+  
+  .room-grid .room-card {
+    min-width: 70px;
+    padding: 10px;
+  }
+}
+
+/* Animation for tab content */
+.tab-content-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.tab-content-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Loading animation */
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.loading {
+  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
