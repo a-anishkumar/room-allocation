@@ -7,10 +7,14 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependency directories / build output
 node_modules
+node_modules/
 dist
 dist-ssr
 build
+build/Release
+out
 *.local
 
 # Editor directories and files
@@ -19,11 +23,93 @@ build
 .idea
 .DS_Store
 Thumbs.db
+
+# Coverage and test outputs
 coverage/
+coverage
+*.lcov
+.nyc_output
+
+# Environment files
 .env
 .env.*
+!.env.example
+
+# Windows / Visual Studio
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Legacy/alt tooling caches
+lib-cov
+.grunt
+bower_components
+.lock-wscript
+jspm_packages/
+web_modules/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional caches
+.npm
+.eslintcache
+.stylelintcache
+.node_repl_history
+*.tgz
+.yarn-integrity
+.cache
+.parcel-cache
+
+# Framework outputs
+.next
+.nuxt
+
+# Gatsby
+.cache/
+# public
+
+# Vuepress
+.vuepress/dist
+
+# Vuepress v2 / Vite / SvelteKit caches
+.temp
+.cache
+.svelte-kit/
+**/.vitepress/dist
+**/.vitepress/cache
+
+# Docusaurus
+.docusaurus
+
+# Serverless and other tooling
+.serverless/
+.fusebox/
+.dynamodb/
+.firebase/
+.tern-port
+.vscode-test
+
+# Yarn v3 (Berry)
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# Vite logs files
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
