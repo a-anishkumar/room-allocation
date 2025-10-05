@@ -8,18 +8,46 @@
   justify-content: center;
   padding: 20px;
   background: transparent;
+  position: relative;
+}
+
+.student-details-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
+  animation: float 8s ease-in-out infinite;
+  pointer-events: none;
 }
 
 .student-details-card {
   width: 100%;
   max-width: 1200px;
-  background: rgba(255, 255, 255, 0.92);
-  border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 24px;
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
   overflow: hidden;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  position: relative;
+  z-index: 1;
+  animation: fadeIn 0.8s ease-out;
+  transition: all 0.3s ease;
+}
+
+.student-details-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 
+    0 35px 70px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.4);
 }
 
 .student-details-header {
@@ -108,6 +136,8 @@
 }
 
 .student-details-form input,
+.student-details-form select,
+.student-details-form textarea,
 .select-input {
   width: 100%;
   padding: 14px 16px;
@@ -120,6 +150,8 @@
 }
 
 .student-details-form input:focus,
+.student-details-form select:focus,
+.student-details-form textarea:focus,
 .select-input:focus {
   outline: none;
   border-color: #4299e1;
@@ -127,14 +159,24 @@
 }
 
 .student-details-form input.error,
+.student-details-form select.error,
+.student-details-form textarea.error,
 .select-input.error {
   border-color: #e53e3e;
 }
 
 .student-details-form input.error:focus,
+.student-details-form select.error:focus,
+.student-details-form textarea.error:focus,
 .select-input.error:focus {
   border-color: #e53e3e;
   box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.2);
+}
+
+.student-details-form input.read-only {
+  background-color: #f7fafc;
+  color: #718096;
+  cursor: not-allowed;
 }
 
 .error-text {
@@ -188,11 +230,11 @@
 
 .submit-btn {
   width: 100%;
-  padding: 16px;
-  background: linear-gradient(135deg, rgba(26, 54, 93, 0.9) 0%, rgba(44, 82, 130, 0.9) 100%);
+  padding: 18px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
@@ -200,21 +242,39 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  margin-top: 20px;
-  box-shadow: 0 4px 6px rgba(26, 54, 93, 0.2);
+  gap: 12px;
+  margin-top: 24px;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.submit-btn:hover:not(.submitting)::before {
+  left: 100%;
 }
 
 .submit-btn:hover:not(.submitting) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(26, 54, 93, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
 }
 
 .submit-btn.submitting {
-  background: rgba(160, 174, 192, 0.9);
+  background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
   cursor: not-allowed;
   transform: none;
-  box-shadow: none;
+  box-shadow: 0 4px 12px rgba(160, 174, 192, 0.3);
 }
 
 .submit-btn .spinner {
@@ -224,6 +284,168 @@
   border-top: 2px solid white;
   border-radius: 50%;
   animation: spin 1s linear infinite;
+}
+
+/* -------------------- Student Profile Styles -------------------- */
+.student-profile-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: transparent;
+}
+
+.header-section {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.header-section h2 {
+  color: #1a365d;
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.note {
+  color: #718096;
+  font-weight: 500;
+  margin-bottom: 0;
+  font-size: 0.9rem;
+}
+
+.student-profile-form {
+  background: rgba(255, 255, 255, 0.92);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.form-section {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.form-section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.form-section h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a365d;
+  margin: 0 0 1.5rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #4299e1;
+  display: inline-block;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group-profile {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.form-group-profile label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #2d3748;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.success-message {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.success-message h2 {
+  color: #38a169;
+  margin-bottom: 1rem;
+}
+
+.documents-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.document-upload {
+  padding: 1rem;
+  border: 2px dashed #cbd5e0;
+  border-radius: 8px;
+  background-color: #f7fafc;
+}
+
+.preview-container {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+}
+
+.document-link {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: #4299e1;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.document-link:hover {
+  background-color: #3182ce;
+}
+
+.form-note {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background-color: #ebf8ff;
+  border-left: 4px solid #4299e1;
+  border-radius: 4px;
+}
+
+.form-note p {
+  margin: 0;
+  color: #2c5282;
 }
 
 /* -------------------- Room Selection Styles -------------------- */
@@ -550,6 +772,28 @@
     width: 100%;
     justify-content: center;
   }
+  
+  /* Student Profile Responsive */
+  .form-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .student-profile-container {
+    padding: 1rem;
+  }
+  
+  .student-profile-form {
+    padding: 1.5rem;
+  }
+  
+  .header-section h2 {
+    font-size: 1.5rem;
+  }
+  
+  .documents-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 480px) {
@@ -568,5 +812,165 @@
   .form-intro h2 {
     font-size: 20px;
   }
+  
+  /* Student Profile Responsive */
+  .student-profile-container {
+    padding: 0.5rem;
+  }
+  
+  .student-profile-form {
+    padding: 1rem;
+  }
 }
 
+.vacancy-page {
+  padding: 2rem;
+  background: #f9fafb;
+  min-height: 100vh;
+}
+
+.vacancy-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.vacancy-filters {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+}
+
+.filter-group select {
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-top: 0.3rem;
+}
+
+.room-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.room-card {
+  background: #fff;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.room-card.available {
+  border-color: #48bb78;
+  background: #f0fff4;
+}
+
+.room-card.full {
+  border-color: #f56565;
+  background: #fff5f5;
+}
+
+.room-card:hover {
+  transform: translateY(-3px);
+}
+
+.bed-status {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0.8rem 0;
+}
+
+.bed {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.bed.free {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.bed.booked {
+  background: #fed7d7;
+  color: #742a2a;
+}
+
+.room-info {
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.vacant {
+  color: #2f855a;
+}
+
+.occupied {
+  color: #c53030;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+}
+
+.spinner {
+  border: 4px solid #eee;
+  border-top: 4px solid #3182ce;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  margin: 0 auto 1rem;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.bed {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  margin: 4px;
+  line-height: 28px;
+  text-align: center;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: default;
+}
+
+.bed.free {
+  background-color: #d4f7dc; /* light green */
+  color: #1a7f37;
+  border: 1px solid #1a7f37;
+}
+
+.bed.booked {
+  background-color: #f8d7da; /* light red */
+  color: #842029;
+  border: 1px solid #842029;
+}
+
+.bed.admin-bed {
+  background-color: #cce5ff; /* light blue */
+  color: #084298;
+  border: 2px solid #084298;
+}

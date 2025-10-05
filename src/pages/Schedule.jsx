@@ -1,60 +1,45 @@
 // src/pages/Schedule.jsx
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { getDefaultWeeklyMenu, getWeeklyMenu, fetchWeeklyMenuFromSupabase, subscribeWeeklyMenu } from "../utils/menuStorage";
 
 export default function Schedule() {
   const [selectedDay, setSelectedDay] = useState("Monday");
+  const [weeklyMenu, setWeeklyMenu] = useState(() => getWeeklyMenu() || getDefaultWeeklyMenu());
 
-  const weeklyMenu = {
-    Monday: {
-      morning: ["Coffee", "Milk"],
-      breakfast: "Idli, Sambar, Coconut Chutney",
-      lunch: "Sambar Rice, Rasam, Poriyal, Kootu, Papad, Curd",
-      evening: ["Tea", "Milk"],
-      dinner: "Puliyodarai, Vadai, Rice, Poriyal, Mor Kuzhambu"
-    },
-    Tuesday: {
-      morning: ["Coffee", "Milk"],
-      breakfast: "Puri, Masala Kuzhambu",
-      lunch: "Jeera Rice, Dal, Poriyal, Rasam, Papad, Curd",
-      evening: ["Tea", "Milk"],
-      dinner: "Aviyal, Onion Sambar, Rice, Poriyal"
-    },
-    Wednesday: {
-      morning: ["Coffee", "Milk"],
-      breakfast: "Rava Upma, Coconut Chutney",
-      lunch: "Curd Rice, Okra Poriyal, Dal, Papad, Pickle",
-      evening: ["Tea", "Milk"],
-      dinner: "Kootu, Mor Kuzhambu, Rice, Poriyal, Papad"
-    },
-    Thursday: {
-      morning: ["Coffee", "Milk"],
-      breakfast: "Paniyaram, Coconut Chutney",
-      lunch: "Lemon Rice, Dal, Poriyal, Papad, Curd",
-      evening: ["Tea", "Milk"],
-      dinner: "Vathal Kuzhambu, Rice, Poriyal, Mor Kuzhambu"
-    },
-    Friday: {
-      morning: ["Coffee", "Milk"],
-      breakfast: "Puttu, Kara Chutney",
-      lunch: "Tomato Rice, Dal, Poriyal, Papad, Curd",
-      evening: ["Tea", "Milk"],
-      dinner: "Paruppu Kuzhambu, Rice, Poriyal, Rasam"
-    },
-    Saturday: {
-      morning: ["Coffee", "Milk"],
-      breakfast: "Masala Dosa, Sambar, Chutney",
-      lunch: "Tamarind Rice, Dal, Poriyal, Papad, Curd",
-      evening: ["Tea", "Milk"],
-      dinner: "Butter Paneer, Rice, Poriyal, Mor Kuzhambu"
-    },
-    Sunday: {
-      morning: ["Coffee", "Milk"],
-      breakfast: "Pongal, Ven Pongal, Sweet Pongal",
-      lunch: "Special Meal: Dal, Sambar, Rasam, Three Poriyal, Papad, Vadai, Payasam",
-      evening: ["Tea", "Milk"],
-      dinner: "Green Gram Kuzhambu, Rice, Poriyal, Mor Kuzhambu"
-    }
-  };
+  useEffect(() => {
+    // Initial fetch from Supabase if available
+    (async () => {
+      const cloud = await fetchWeeklyMenuFromSupabase();
+      if (cloud) setWeeklyMenu(cloud);
+    })();
+
+    const onCustom = (e) => {
+      setWeeklyMenu(e.detail || getWeeklyMenu() || getDefaultWeeklyMenu());
+    };
+    const onStorage = (e) => {
+      if (e.key === "weeklyMenu") {
+        setWeeklyMenu(getWeeklyMenu() || getDefaultWeeklyMenu());
+      }
+    };
+    window.addEventListener("weeklyMenuUpdated", onCustom);
+    const unsubscribe = subscribeWeeklyMenu((menu) => setWeeklyMenu(menu));
+    window.addEventListener("storage", onStorage);
+    // Fallback polling in case events are missed across contexts
+    const intervalId = setInterval(() => {
+      try {
+        const latest = getWeeklyMenu() || getDefaultWeeklyMenu();
+        setWeeklyMenu(latest);
+      } catch (_) {
+        // ignore
+      }
+    }, 1000);
+    return () => {
+      window.removeEventListener("weeklyMenuUpdated", onCustom);
+      window.removeEventListener("storage", onStorage);
+      unsubscribe();
+      clearInterval(intervalId);
+    };
+  }, []);
 
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -79,7 +64,7 @@ export default function Schedule() {
 
       <div className="menu-card">
         <h2 className="day-heading">{selectedDay} Menu</h2>
-        
+
         <div className="meal-section">
           <h3>Morning Beverages (6:30 AM - 7:30 AM)</h3>
           <div className="beverage-list">
@@ -172,30 +157,30 @@ export default function Schedule() {
           display: flex;
           justify-content: center;
           margin-bottom: 2rem;
-          gap: 0.5rem;
+          gap: 8px;
           flex-wrap: wrap;
         }
-        
+
         .day-btn {
-          padding: 0.75rem 1rem;
-          border: none;
-          background: white;
-          border-radius: 6px;
+          padding: 8px 12px;
+          border: 1px solid #e5e7eb;
+          background: #ffffff;
+          border-radius: 999px;
           cursor: pointer;
           font-weight: 600;
-          transition: all 0.3s;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-          min-width: 100px;
+          color: #111827;
+          transition: box-shadow 0.2s, transform 0.08s, background 0.2s;
+          min-width: 96px;
         }
-        
-        .day-btn.active {
-          background: #e74c3c;
-          color: white;
-        }
-        
+
         .day-btn:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+          box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        .day-btn.active {
+          background: #2563eb;
+          color: #ffffff;
+          border-color: transparent;
         }
         
         .menu-card {

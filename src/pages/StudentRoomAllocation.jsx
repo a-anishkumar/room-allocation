@@ -28,6 +28,8 @@ export default function StudentRoomAllocation() {
     regNo: "",
     department: "",
     feesStatus: "Paid",
+    transactionId: "",
+    paymentDate: "",
     hostel: HOSTELS[0],
     floor: FLOORS[0],
   });
@@ -162,97 +164,101 @@ export default function StudentRoomAllocation() {
   };
 
 const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!validateForm()) return;
-  setIsSubmitting(true);
+  e.preventDefault();
+  if (!validateForm()) return;
+  setIsSubmitting(true);
 
-  try {
-    // Upload receipt (mandatory)
-    const { data: uploadData, error: uploadError } = await supabase.storage
-      .from("receipts")
-      .upload(`receipts/${Date.now()}_${receipt.name}`, receipt);
+  try {
+    // Upload receipt (mandatory)
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from("receipts")
+      .upload(`receipts/${Date.now()}_${receipt.name}`, receipt);
 
-    if (uploadError) throw uploadError;
+    if (uploadError) throw uploadError;
 
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from("receipts").getPublicUrl(uploadData.path);
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from("receipts").getPublicUrl(uploadData.path);
 
-    const receiptUrl = publicUrl;
+    const receiptUrl = publicUrl;
 
-    // Ensure we use auth.uid()
-    const { data: authData, error: authError } = await supabase.auth.getUser();
-    if (authError || !authData?.user) {
-      throw new Error("User authentication failed");
-    }
-    const authUser = authData.user;
+    // Ensure we use auth.uid()
+    const { data: authData, error: authError } = await supabase.auth.getUser();
+    if (authError || !authData?.user) {
+      throw new Error("User authentication failed");
+    }
+    const authUser = authData.user;
 
-    const { roomNo, bedIndex } = selected;
-    
-    // Upsert (insert or update) the allocation
-    const { error: upsertError } = await supabase.from("allocations").upsert(
-      {
-        user_id: authUser.id,
-        email: authUser.email,
-        name: form.name,
-        reg_no: form.regNo,
-        department: form.department,
-        fees_status: form.feesStatus,
-        receipt_url: receiptUrl,
-        hostel: form.hostel,
-        floor: form.floor,
-        room_number: roomNo,
-        bed_number: bedIndex + 1,
-        status: 'pending',
-      },
-      { onConflict: 'user_id' }
-    );
+    const { roomNo, bedIndex } = selected;
+    
+    // Upsert (insert or update) the allocation
+    const { error: upsertError } = await supabase.from("allocations").upsert(
+      {
+        user_id: authUser.id,
+        email: authUser.email,
+        name: form.name,
+        reg_no: form.regNo,
+        department: form.department,
+        fees_status: form.feesStatus,
+        receipt_url: receiptUrl,
+        transaction_id: form.transactionId,
+        payment_date: form.paymentDate,
+        hostel: form.hostel,
+        floor: form.floor,
+        room_number: roomNo,
+        bed_number: bedIndex + 1,
+        status: 'pending',
+      },
+      { onConflict: 'user_id' }
+    );
 
-    // This is the key change: check if upsertError exists before throwing it.
-    // A `Failed to fetch` error is a network issue, not a database error.
-    if (upsertError) {
-      // Handle specific database errors, e.g., unique key violation
-      if (upsertError.code === "23505") { // Unique violation error code
-        alert("A record for this user already exists.");
-      } else {
-        throw upsertError;
-      }
-    }
+    // This is the key change: check if upsertError exists before throwing it.
+    // A `Failed to fetch` error is a network issue, not a database error.
+    if (upsertError) {
+      // Handle specific database errors, e.g., unique key violation
+      if (upsertError.code === "23505") { // Unique violation error code
+        alert("A record for this user already exists.");
+      } else {
+        throw upsertError;
+      }
+    }
 
-    // The rest of the success logic remains the same
-    saveAllocation({
-      regNo: form.regNo,
-      name: form.name,
-      department: form.department,
-      hostel: form.hostel,
-      floor: form.floor,
-      roomNo,
-      bedIndex,
-      date: new Date().toISOString(),
-    });
+    // The rest of the success logic remains the same
+    saveAllocation({
+      regNo: form.regNo,
+      name: form.name,
+      department: form.department,
+      hostel: form.hostel,
+      floor: form.floor,
+      roomNo,
+      bedIndex,
+      date: new Date().toISOString(),
+    });
 
-    setShowConfirmation(true);
-    setExistingAllocation({
-      user_id: authUser.id,
-      email: authUser.email,
-      name: form.name,
-      reg_no: form.regNo,
-      department: form.department,
-      fees_status: form.feesStatus,
-      receipt_url: receiptUrl,
-      hostel: form.hostel,
-      floor: form.floor,
-      room_number: roomNo,
-      bed_number: bedIndex + 1,
-      status: 'pending',
-    });
+    setShowConfirmation(true);
+    setExistingAllocation({
+      user_id: authUser.id,
+      email: authUser.email,
+      name: form.name,
+      reg_no: form.regNo,
+      department: form.department,
+      fees_status: form.feesStatus,
+      receipt_url: receiptUrl,
+      transaction_id: form.transactionId,
+      payment_date: form.paymentDate,
+      hostel: form.hostel,
+      floor: form.floor,
+      room_number: roomNo,
+      bed_number: bedIndex + 1,
+      status: 'pending',
+    });
 
-  } catch (err) {
-    console.error("Error during submission:", err);
-    alert("Error saving details: " + err.message);
-  } finally {
-    setIsSubmitting(false);
-  }
+  } catch (err) {
+    console.error("Error during submission:", err);
+    alert("Error saving details: " + err.message);
+  } finally {
+    setIsSubmitting(false);
+  }
 };
   
   const closeConfirmation = () => {
@@ -270,6 +276,8 @@ const handleSubmit = async (e) => {
       regNo: existingAllocation?.reg_no || "",
       department: existingAllocation?.department || "",
       feesStatus: existingAllocation?.fees_status || "Paid",
+      transactionId: existingAllocation?.transaction_id || "",
+      paymentDate: existingAllocation?.payment_date || "",
       hostel: existingAllocation?.hostel || HOSTELS[0],
       floor: existingAllocation?.floor || FLOORS[0],
     });
@@ -308,12 +316,6 @@ const handleSubmit = async (e) => {
         <div className="student-room-allocation">
           <div className="student-details-container">
             <div className="student-details-card">
-              <div className="student-details-header">
-                <div className="university-logo">
-                  <h2>Kongu Engineering College</h2>
-                  <p>Hostel Management System</p>
-                </div>
-              </div>
               <div className="form-content">
                 <div className="form-intro">
                   <h2>Room Allocation</h2>
@@ -356,12 +358,6 @@ const handleSubmit = async (e) => {
       <div className="student-room-allocation">
         <div className="student-details-container">
           <div className="student-details-card">
-            <div className="student-details-header">
-              <div className="university-logo">
-                <h2>Kongu Engineering College</h2>
-                <p>Hostel Management System</p>
-              </div>
-            </div>
             <div className="form-content">
               <div className="form-intro">
                 <h2>Room Allocation</h2>
@@ -445,12 +441,6 @@ const handleSubmit = async (e) => {
     <div className="student-room-allocation">
       <div className="student-details-container">
         <div className="student-details-card">
-          <div className="student-details-header">
-            <div className="university-logo">
-              <h2>Kongu Engineering College</h2>
-              <p>Hostel Management System</p>
-            </div>
-          </div>
           <div className="form-content">
             <div className="form-intro">
               <h2>Room Allocation</h2>
@@ -581,6 +571,35 @@ const handleSubmit = async (e) => {
                 </div>
                 <p className="file-hint">Maximum file size: 5MB</p>
                 {errors.receipt && <span className="error-text">{errors.receipt}</span>}
+                
+                {/* Transaction ID and Payment Date */}
+                <div className="form-grid" style={{ marginTop: "20px" }}>
+                  <div className="form-group">
+                    <label htmlFor="transactionId">Transaction ID</label>
+                    <input
+                      id="transactionId"
+                      name="transactionId"
+                      value={form.transactionId}
+                      onChange={onChange}
+                      className={errors.transactionId ? "error" : ""}
+                      placeholder="Enter transaction ID"
+                    />
+                    {errors.transactionId && <span className="error-text">{errors.transactionId}</span>}
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="paymentDate">Payment Date</label>
+                    <input
+                      id="paymentDate"
+                      name="paymentDate"
+                      type="date"
+                      value={form.paymentDate}
+                      onChange={onChange}
+                      className={errors.paymentDate ? "error" : ""}
+                    />
+                    {errors.paymentDate && <span className="error-text">{errors.paymentDate}</span>}
+                  </div>
+                </div>
               </div>
 
               {/* Room Grid Section */}
@@ -629,11 +648,15 @@ const handleSubmit = async (e) => {
         <div className="modal-overlay">
           <div className="confirmation-modal">
             <div className="modal-header">
-              <h3>Allocation Successful!</h3>
+              <h3>Allocation Submitted Successfully</h3>
             </div>
             <div className="modal-body">
-              <div className="success-icon">✓</div>
-              <p>You have been allocated:</p>
+              <div className="success-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <p>Your room allocation request has been submitted for review.</p>
               <div className="allocation-details">
                 <div className="detail-item">
                   <span className="detail-label">Hostel:</span>
@@ -653,8 +676,7 @@ const handleSubmit = async (e) => {
                 </div>
               </div>
               <p className="confirmation-note">
-                Your room allocation has been confirmed. You can view your allocation details in
-                your student portal.
+                You will receive a notification once your allocation has been approved by the administrator.
               </p>
             </div>
             <div className="modal-footer">

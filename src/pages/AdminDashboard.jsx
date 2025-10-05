@@ -5,6 +5,7 @@ import StudentProfiles from "../components/admin/StudentProfiles";
 import FeedbackManagement from "../components/admin/FeedbackManagement";
 import LeaveApplications from "../components/admin/LeaveApplications";
 import VacantRooms from "../components/admin/VacantRooms";
+import MenuEditor from "../components/admin/MenuEditor";
 import "../styles/AdminDashboard.css";
 
 export default function AdminDashboard() {
@@ -22,6 +23,8 @@ export default function AdminDashboard() {
         return <LeaveApplications />;
       case "vacantRooms":
         return <VacantRooms />;
+      case "menuEditor":
+        return <MenuEditor />;
       default:
         return <RoomRequests />;
     }
@@ -61,6 +64,12 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab("vacantRooms")}
           >
             Vacant Rooms
+          </button>
+          <button
+            className={activeTab === "menuEditor" ? "active" : ""}
+            onClick={() => setActiveTab("menuEditor")}
+          >
+            Menu Editor
           </button>
         </nav>
       </header>

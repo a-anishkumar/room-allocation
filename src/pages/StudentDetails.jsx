@@ -14,6 +14,8 @@ export default function StudentDetails() {
     regNo: "",
     department: "",
     feesStatus: "Paid",
+    transactionId: "",
+    paymentDate: "",
   });
 
   const [receipt, setReceipt] = useState(null);
@@ -90,6 +92,8 @@ export default function StudentDetails() {
             department: form.department,
             feesStatus: form.feesStatus,
             receiptUrl: receiptUrl,
+            transactionId: form.transactionId,
+            paymentDate: form.paymentDate,
             user_id: user.id,
           },
         ])
@@ -110,7 +114,7 @@ export default function StudentDetails() {
   return (
     <div className="student-details-container">
       <div className="student-details-overlay"></div>
-      
+
       <div className="student-details-card">
         <div className="student-details-header">
           <div className="university-logo">
@@ -213,14 +217,43 @@ export default function StudentDetails() {
                 />
                 <label htmlFor="receipt" className="file-button">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
-                    <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                    <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z" />
                   </svg>
                   Choose File
                 </label>
                 <span className="file-name">{receipt ? receipt.name : "No file chosen"}</span>
               </div>
               <p className="file-hint">Maximum file size: 5MB</p>
+
+              {/* Transaction ID and Payment Date */}
+              <div className="form-grid" style={{ marginTop: "20px" }}>
+                <div className="form-group">
+                  <label htmlFor="transactionId">Transaction ID</label>
+                  <input
+                    id="transactionId"
+                    name="transactionId"
+                    value={form.transactionId}
+                    onChange={onChange}
+                    className={errors.transactionId ? "error" : ""}
+                    placeholder="Enter transaction ID"
+                  />
+                  {errors.transactionId && <span className="error-text">{errors.transactionId}</span>}
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="paymentDate">Payment Date</label>
+                  <input
+                    id="paymentDate"
+                    name="paymentDate"
+                    type="date"
+                    value={form.paymentDate}
+                    onChange={onChange}
+                    className={errors.paymentDate ? "error" : ""}
+                  />
+                  {errors.paymentDate && <span className="error-text">{errors.paymentDate}</span>}
+                </div>
+              </div>
             </div>
 
             <button

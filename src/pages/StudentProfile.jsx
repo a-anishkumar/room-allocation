@@ -48,6 +48,8 @@ export default function StudentProfile() {
     district: "",
     admissionMode: "",
     feeMode: "",
+    transactionId: "",
+    paymentDate: "",
   });
 
   const [passportPhoto, setPassportPhoto] = useState(null);
@@ -60,6 +62,7 @@ export default function StudentProfile() {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Load existing profile
   useEffect(() => {
@@ -100,8 +103,10 @@ export default function StudentProfile() {
             district: data.district || "",
             admissionMode: data.admission_mode || "",
             feeMode: data.fee_mode || "",
+            transactionId: data.transaction_id || "",
+            paymentDate: data.payment_date || "",
           });
-          
+
           // Set preview URLs if they exist
           if (data.passport_photo_url) setPassportPreview(data.passport_photo_url);
           if (data.id_card_photo_url) setIdCardPreview(data.id_card_photo_url);
@@ -124,14 +129,14 @@ export default function StudentProfile() {
   const handleFileChange = (setter, setPreview) => (e) => {
     const file = e.target.files?.[0] || null;
     if (!file) return;
-    
+
     if (file.size > 10 * 1024 * 1024) {
-      alert("File size must be under 10MB");
+      setErrorMessage("File size must be under 10MB");
       return;
     }
-    
+
     setter(file);
-    
+
     // Create preview
     const reader = new FileReader();
     reader.onload = () => {
@@ -168,7 +173,11 @@ export default function StudentProfile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    setErrorMessage("");
+    if (!validateForm()) {
+      setErrorMessage("Please fill out all required fields.");
+      return;
+    }
     if (!user || !user.id) return alert("User not loaded yet.");
 
     setIsSubmitting(true);
@@ -221,6 +230,8 @@ export default function StudentProfile() {
           district: form.district,
           admission_mode: form.admissionMode,
           fee_mode: form.feeMode,
+          transaction_id: form.transactionId,
+          payment_date: form.paymentDate,
           passport_photo_url: passportUrl,
           id_card_photo_url: idCardUrl,
           fees_receipt_url: feesUrl,
@@ -230,7 +241,7 @@ export default function StudentProfile() {
       setSuccessMessage("Profile saved successfully!");
     } catch (err) {
       console.error("Submit error:", err.message);
-      alert("Error saving profile: " + err.message);
+      setErrorMessage("Error saving profile: " + err.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -239,26 +250,33 @@ export default function StudentProfile() {
   return (
     <div className="student-profile-container">
       <div className="header-section">
-        <h2>STUDENT PROFILE FORM</h2>
-        <p className="note">Please complete all required fields to finalize your student profile</p>
+        <h2 className="header-title">Student Profile</h2>
+        <p className="header-note">Please complete all required fields to finalize your student profile. 📝</p>
       </div>
-      
-      {successMessage && (
-        <div className="success-message">
-          <h2>Profile Updated Successfully!</h2>
-          <p>Your student profile has been successfully saved.</p>
-          <button className="submit-btn" onClick={() => setSuccessMessage("")}>
-            Continue Editing
-          </button>
+
+      {(successMessage || errorMessage) && (
+        <div className={`message-banner ${successMessage ? 'success' : 'error'}`}>
+          {successMessage && (
+            <>
+              <p>{successMessage} ✅</p>
+              <button className="dismiss-btn" onClick={() => setSuccessMessage("")}>Dismiss</button>
+            </>
+          )}
+          {errorMessage && (
+            <>
+              <p>{errorMessage} ❌</p>
+              <button className="dismiss-btn" onClick={() => setErrorMessage("")}>Dismiss</button>
+            </>
+          )}
         </div>
       )}
-      
+
       <form className="student-profile-form" onSubmit={handleSubmit}>
         <div className="form-section">
           <h3>Personal Information</h3>
-          <div className="form-row">
+          <div className="form-grid">
             <div className="form-group">
-              <label htmlFor="name">Full Name: *</label>
+              <label htmlFor="name">Full Name *</label>
               <input
                 type="text"
                 id="name"
@@ -266,13 +284,12 @@ export default function StudentProfile() {
                 value={form.name}
                 onChange={onChange}
                 className={errors.name ? 'error' : ''}
-                required
               />
               {errors.name && <span className="error-text">{errors.name}</span>}
             </div>
-            
+
             <div className="form-group">
-              <label htmlFor="rollNo">Roll Number: *</label>
+              <label htmlFor="rollNo">Roll Number *</label>
               <input
                 type="text"
                 id="rollNo"
@@ -280,65 +297,57 @@ export default function StudentProfile() {
                 value={form.rollNo}
                 onChange={onChange}
                 className={errors.rollNo ? 'error' : ''}
-                required
               />
               {errors.rollNo && <span className="error-text">{errors.rollNo}</span>}
             </div>
-          </div>
-          
-          <div className="form-row">
+
             <div className="form-group">
-              <label htmlFor="department">Department: *</label>
+              <label htmlFor="department">Department *</label>
               <select
                 id="department"
                 name="department"
                 value={form.department}
                 onChange={onChange}
                 className={errors.department ? 'error' : ''}
-                required
               >
                 <option value="">Select Department</option>
                 {DEPARTMENTS.map(d => <option key={d} value={d}>{d}</option>)}
               </select>
               {errors.department && <span className="error-text">{errors.department}</span>}
             </div>
-            
+
             <div className="form-group">
-              <label htmlFor="year">Year: *</label>
+              <label htmlFor="year">Year *</label>
               <select
                 id="year"
                 name="year"
                 value={form.year}
                 onChange={onChange}
                 className={errors.year ? 'error' : ''}
-                required
               >
                 <option value="">Select Year</option>
                 {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
               </select>
               {errors.year && <span className="error-text">{errors.year}</span>}
             </div>
-            
+
             <div className="form-group">
-              <label htmlFor="section">Section: *</label>
+              <label htmlFor="section">Section *</label>
               <select
                 id="section"
                 name="section"
                 value={form.section}
                 onChange={onChange}
                 className={errors.section ? 'error' : ''}
-                required
               >
                 <option value="">Select Section</option>
                 {SECTIONS.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
               {errors.section && <span className="error-text">{errors.section}</span>}
             </div>
-          </div>
-          
-          <div className="form-row">
+
             <div className="form-group">
-              <label htmlFor="dob">Date of Birth: *</label>
+              <label htmlFor="dob">Date of Birth *</label>
               <input
                 type="date"
                 id="dob"
@@ -346,29 +355,27 @@ export default function StudentProfile() {
                 value={form.dob}
                 onChange={onChange}
                 className={errors.dob ? 'error' : ''}
-                required
               />
               {errors.dob && <span className="error-text">{errors.dob}</span>}
             </div>
-            
+
             <div className="form-group">
-              <label htmlFor="bloodGroup">Blood Group: *</label>
+              <label htmlFor="bloodGroup">Blood Group *</label>
               <select
                 id="bloodGroup"
                 name="bloodGroup"
                 value={form.bloodGroup}
                 onChange={onChange}
                 className={errors.bloodGroup ? 'error' : ''}
-                required
               >
                 <option value="">Select Blood Group</option>
                 {BLOOD_GROUPS.map(bg => <option key={bg} value={bg}>{bg}</option>)}
               </select>
               {errors.bloodGroup && <span className="error-text">{errors.bloodGroup}</span>}
             </div>
-            
+
             <div className="form-group">
-              <label htmlFor="email">Email Address: *</label>
+              <label htmlFor="email">Email Address *</label>
               <input
                 type="email"
                 id="email"
@@ -380,12 +387,12 @@ export default function StudentProfile() {
             </div>
           </div>
         </div>
-        
+
         <div className="form-section">
-          <h3>Contact Information</h3>
-          <div className="form-row">
+          <h3>Contact & Residence Information</h3>
+          <div className="form-grid">
             <div className="form-group">
-              <label htmlFor="mobile">Mobile Number: *</label>
+              <label htmlFor="mobile">Mobile Number *</label>
               <input
                 type="text"
                 id="mobile"
@@ -393,13 +400,12 @@ export default function StudentProfile() {
                 value={form.mobile}
                 onChange={onChange}
                 className={errors.mobile ? 'error' : ''}
-                required
               />
               {errors.mobile && <span className="error-text">{errors.mobile}</span>}
             </div>
-            
+
             <div className="form-group">
-              <label htmlFor="whatsapp">WhatsApp Number: *</label>
+              <label htmlFor="whatsapp">WhatsApp Number *</label>
               <input
                 type="text"
                 id="whatsapp"
@@ -407,34 +413,27 @@ export default function StudentProfile() {
                 value={form.whatsapp}
                 onChange={onChange}
                 className={errors.whatsapp ? 'error' : ''}
-                required
               />
               {errors.whatsapp && <span className="error-text">{errors.whatsapp}</span>}
             </div>
-          </div>
-        </div>
-        
-        <div className="form-section">
-          <h3>Residence Information</h3>
-          <div className="form-row">
+
             <div className="form-group">
-              <label htmlFor="floor">Floor: *</label>
+              <label htmlFor="floor">Floor *</label>
               <select
                 id="floor"
                 name="floor"
                 value={form.floor}
                 onChange={onChange}
                 className={errors.floor ? 'error' : ''}
-                required
               >
                 <option value="">Select Floor</option>
                 {FLOORS.map(f => <option key={f} value={f}>{f}</option>)}
               </select>
               {errors.floor && <span className="error-text">{errors.floor}</span>}
             </div>
-            
+
             <div className="form-group">
-              <label htmlFor="roomNo">Room Number: *</label>
+              <label htmlFor="roomNo">Room Number *</label>
               <input
                 type="text"
                 id="roomNo"
@@ -442,18 +441,43 @@ export default function StudentProfile() {
                 value={form.roomNo}
                 onChange={onChange}
                 className={errors.roomNo ? 'error' : ''}
-                required
               />
               {errors.roomNo && <span className="error-text">{errors.roomNo}</span>}
             </div>
           </div>
+          <div className="form-group-full-width">
+            <label htmlFor="address">Complete Address *</label>
+            <textarea
+              id="address"
+              name="address"
+              value={form.address}
+              onChange={onChange}
+              className={errors.address ? 'error' : ''}
+              rows="3"
+            ></textarea>
+            {errors.address && <span className="error-text">{errors.address}</span>}
+          </div>
+          <div className="form-grid">
+            <div className="form-group">
+              <label htmlFor="district">District *</label>
+              <input
+                type="text"
+                id="district"
+                name="district"
+                value={form.district}
+                onChange={onChange}
+                className={errors.district ? 'error' : ''}
+              />
+              {errors.district && <span className="error-text">{errors.district}</span>}
+            </div>
+          </div>
         </div>
-        
+
         <div className="form-section">
           <h3>Parent Information</h3>
-          <div className="form-row">
+          <div className="form-grid">
             <div className="form-group">
-              <label htmlFor="fatherName">Father's Name: *</label>
+              <label htmlFor="fatherName">Father's Name *</label>
               <input
                 type="text"
                 id="fatherName"
@@ -461,13 +485,12 @@ export default function StudentProfile() {
                 value={form.fatherName}
                 onChange={onChange}
                 className={errors.fatherName ? 'error' : ''}
-                required
               />
               {errors.fatherName && <span className="error-text">{errors.fatherName}</span>}
             </div>
-            
+
             <div className="form-group">
-              <label htmlFor="fatherContact">Father's Contact Number: *</label>
+              <label htmlFor="fatherContact">Father's Contact Number *</label>
               <input
                 type="text"
                 id="fatherContact"
@@ -475,13 +498,12 @@ export default function StudentProfile() {
                 value={form.fatherContact}
                 onChange={onChange}
                 className={errors.fatherContact ? 'error' : ''}
-                required
               />
               {errors.fatherContact && <span className="error-text">{errors.fatherContact}</span>}
             </div>
-            
+
             <div className="form-group">
-              <label htmlFor="fatherOccupation">Father's Occupation:</label>
+              <label htmlFor="fatherOccupation">Father's Occupation</label>
               <input
                 type="text"
                 id="fatherOccupation"
@@ -491,10 +513,10 @@ export default function StudentProfile() {
               />
             </div>
           </div>
-          
-          <div className="form-row">
+
+          <div className="form-grid">
             <div className="form-group">
-              <label htmlFor="motherName">Mother's Name: *</label>
+              <label htmlFor="motherName">Mother's Name *</label>
               <input
                 type="text"
                 id="motherName"
@@ -502,13 +524,12 @@ export default function StudentProfile() {
                 value={form.motherName}
                 onChange={onChange}
                 className={errors.motherName ? 'error' : ''}
-                required
               />
               {errors.motherName && <span className="error-text">{errors.motherName}</span>}
             </div>
-            
+
             <div className="form-group">
-              <label htmlFor="motherContact">Mother's Contact Number: *</label>
+              <label htmlFor="motherContact">Mother's Contact Number *</label>
               <input
                 type="text"
                 id="motherContact"
@@ -516,13 +537,12 @@ export default function StudentProfile() {
                 value={form.motherContact}
                 onChange={onChange}
                 className={errors.motherContact ? 'error' : ''}
-                required
               />
               {errors.motherContact && <span className="error-text">{errors.motherContact}</span>}
             </div>
-            
+
             <div className="form-group">
-              <label htmlFor="motherOccupation">Mother's Occupation:</label>
+              <label htmlFor="motherOccupation">Mother's Occupation</label>
               <input
                 type="text"
                 id="motherOccupation"
@@ -533,70 +553,33 @@ export default function StudentProfile() {
             </div>
           </div>
         </div>
-        
+
         <div className="form-section">
-          <h3>Address Information</h3>
-          <div className="form-row">
-            <div className="form-group full-width">
-              <label htmlFor="address">Complete Address: *</label>
-              <textarea
-                id="address"
-                name="address"
-                value={form.address}
-                onChange={onChange}
-                className={errors.address ? 'error' : ''}
-                rows="3"
-                required
-              ></textarea>
-              {errors.address && <span className="error-text">{errors.address}</span>}
-            </div>
-          </div>
-          
-          <div className="form-row">
+          <h3>Admission & Fee Details</h3>
+          <div className="form-grid">
             <div className="form-group">
-              <label htmlFor="district">District: *</label>
-              <input
-                type="text"
-                id="district"
-                name="district"
-                value={form.district}
-                onChange={onChange}
-                className={errors.district ? 'error' : ''}
-                required
-              />
-              {errors.district && <span className="error-text">{errors.district}</span>}
-            </div>
-          </div>
-        </div>
-        
-        <div className="form-section">
-          <h3>Admission Details</h3>
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="admissionMode">Mode of Admission: *</label>
+              <label htmlFor="admissionMode">Mode of Admission *</label>
               <select
                 id="admissionMode"
                 name="admissionMode"
                 value={form.admissionMode}
                 onChange={onChange}
                 className={errors.admissionMode ? 'error' : ''}
-                required
               >
                 <option value="">Select Mode</option>
                 {ADMISSION_MODES.map(m => <option key={m} value={m}>{m}</option>)}
               </select>
               {errors.admissionMode && <span className="error-text">{errors.admissionMode}</span>}
             </div>
-            
+
             <div className="form-group">
-              <label htmlFor="feeMode">Mode of Fees Payment: *</label>
+              <label htmlFor="feeMode">Mode of Fees Payment *</label>
               <select
                 id="feeMode"
                 name="feeMode"
                 value={form.feeMode}
                 onChange={onChange}
                 className={errors.feeMode ? 'error' : ''}
-                required
               >
                 <option value="">Select Mode</option>
                 {FEE_MODES.map(m => <option key={m} value={m}>{m}</option>)}
@@ -605,12 +588,13 @@ export default function StudentProfile() {
             </div>
           </div>
         </div>
-        
+
         <div className="form-section">
           <h3>Document Uploads</h3>
           <div className="form-row documents-grid">
             <div className="form-group document-upload">
-              <label htmlFor="passportPhoto">Passport Size Photo (JPG/PNG, max 10MB): *</label>
+              <label htmlFor="passportPhoto">Passport Size Photo *</label>
+              <p className="file-info">JPG/PNG, max 10MB</p>
               <input
                 type="file"
                 id="passportPhoto"
@@ -618,7 +602,6 @@ export default function StudentProfile() {
                 onChange={handleFileChange(setPassportPhoto, setPassportPreview)}
                 className={errors.passportPhoto ? 'error' : ''}
                 accept="image/*"
-                required
               />
               {errors.passportPhoto && <span className="error-text">{errors.passportPhoto}</span>}
               {passportPreview && (
@@ -627,9 +610,10 @@ export default function StudentProfile() {
                 </div>
               )}
             </div>
-            
+
             <div className="form-group document-upload">
-              <label htmlFor="idCardPhoto">ID Card Photo (Front & Back, JPG/PNG/PDF, max 10MB): *</label>
+              <label htmlFor="idCardPhoto">ID Card Photo (Front & Back) *</label>
+              <p className="file-info">JPG/PNG/PDF, max 10MB</p>
               <input
                 type="file"
                 id="idCardPhoto"
@@ -637,7 +621,6 @@ export default function StudentProfile() {
                 onChange={handleFileChange(setIdCardPhoto, setIdCardPreview)}
                 className={errors.idCardPhoto ? 'error' : ''}
                 accept="image/*,application/pdf"
-                required
               />
               {errors.idCardPhoto && <span className="error-text">{errors.idCardPhoto}</span>}
               {idCardPreview && (
@@ -650,9 +633,10 @@ export default function StudentProfile() {
                 </div>
               )}
             </div>
-            
+
             <div className="form-group document-upload">
-              <label htmlFor="feesReceipt">Fees Receipt (JPG/PNG/PDF, max 10MB): *</label>
+              <label htmlFor="feesReceipt">Fees Receipt *</label>
+              <p className="file-info">JPG/PNG/PDF, max 10MB</p>
               <input
                 type="file"
                 id="feesReceipt"
@@ -660,7 +644,6 @@ export default function StudentProfile() {
                 onChange={handleFileChange(setFeesReceipt, setFeesPreview)}
                 className={errors.feesReceipt ? 'error' : ''}
                 accept="image/*,application/pdf"
-                required
               />
               {errors.feesReceipt && <span className="error-text">{errors.feesReceipt}</span>}
               {feesPreview && (
@@ -672,17 +655,44 @@ export default function StudentProfile() {
                   )}
                 </div>
               )}
+              
+              {/* Transaction ID and Payment Date */}
+              <div className="form-row" style={{ marginTop: "20px" }}>
+                <div className="form-group">
+                  <label htmlFor="transactionId">Transaction ID</label>
+                  <input
+                    id="transactionId"
+                    name="transactionId"
+                    value={form.transactionId}
+                    onChange={onChange}
+                    className={errors.transactionId ? "error" : ""}
+                    placeholder="Enter transaction ID"
+                  />
+                  {errors.transactionId && <span className="error-text">{errors.transactionId}</span>}
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="paymentDate">Payment Date</label>
+                  <input
+                    id="paymentDate"
+                    name="paymentDate"
+                    type="date"
+                    value={form.paymentDate}
+                    onChange={onChange}
+                    className={errors.paymentDate ? "error" : ""}
+                  />
+                  {errors.paymentDate && <span className="error-text">{errors.paymentDate}</span>}
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        
-        <div className="form-note">
-          <p><strong>Note:</strong> All fields marked with an asterisk (*) are required.</p>
+
+        <div className="form-actions">
+          <button type="submit" className="submit-btn" disabled={isSubmitting}>
+            {isSubmitting ? "Saving Profile..." : "Save Profile"}
+          </button>
         </div>
-        
-        <button type="submit" className="submit-btn" disabled={isSubmitting}>
-          {isSubmitting ? "Saving Profile..." : "Save Profile"}
-        </button>
       </form>
     </div>
   );

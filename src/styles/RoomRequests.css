@@ -100,7 +100,8 @@
   color: #1e293b;
 }
 
-.room-badge, .bed-badge {
+.room-badge,
+.bed-badge {
   display: inline-block;
   padding: 4px 8px;
   background-color: #e0f2fe;
@@ -125,8 +126,8 @@
 }
 
 .status-pending {
-  background-color: #fffbeb;
-  color: #d97706;
+  background-color: #eff6ff;
+  color: #2563eb;
 }
 
 .status-confirmed {
@@ -230,8 +231,13 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive styles */
@@ -241,11 +247,11 @@
     align-items: flex-start;
     gap: 16px;
   }
-  
+
   .requests-table-container {
     overflow-x: auto;
   }
-  
+
   .room-requests-table {
     min-width: 800px;
   }
@@ -255,7 +261,7 @@
   .room-requests-container {
     padding: 16px;
   }
-  
+
   .action-buttons {
     flex-direction: column;
   }
