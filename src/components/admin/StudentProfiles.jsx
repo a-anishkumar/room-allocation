@@ -1,7 +1,7 @@
 // src/components/admin/StudentProfiles.jsx
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../utils/supabase";
-import "../../styles/StudentProfile.css";
+import "../../styles/sa.css";
 
 export default function StudentProfiles() {
   const [students, setStudents] = useState([]);
@@ -19,7 +19,6 @@ export default function StudentProfiles() {
 
   const fetchStudents = async () => {
     setLoading(true);
-
     let query = supabase.from("student_profiles").select("*");
 
     if (search.trim() !== "") {
@@ -42,19 +41,18 @@ export default function StudentProfiles() {
   };
 
   const toggleColumn = (column) => {
-    setSelectedColumns(prev => 
-      prev.includes(column) 
+    setSelectedColumns(prev =>
+      prev.includes(column)
         ? prev.filter(col => col !== column)
         : [...prev, column]
     );
   };
 
-  const formatColumnName = (column) => {
-    return column
+  const formatColumnName = (column) =>
+    column
       .split('_')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
-  };
 
   const formatValue = (value) => {
     if (value === null || value === undefined) return "-";
@@ -62,7 +60,6 @@ export default function StudentProfiles() {
     return String(value);
   };
 
-  // All columns based on your schema
   const allColumns = [
     "roll_no", "name", "department", "year", "section", 
     "room_no", "floor", "mobile", "whatsapp", "email",
@@ -72,55 +69,39 @@ export default function StudentProfiles() {
   ];
 
   return (
-    <div className="student-profiles-container">
-      <div className="student-profiles-header">
+    <div className="student-profiles">
+      <div className="header">
         <h2>Student Profiles</h2>
-        <div className="controls-section">
-          <div className="search-container">
-            <div className="search-input-wrapper">
-              <span className="search-icon">🔍</span>
-              <input
-                type="text"
-                placeholder="Search by name, roll no, or department..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                onKeyPress={handleSearch}
-                className="search-input"
-              />
-            </div>
-            <button onClick={handleSearch} className="search-btn">
-              Search
-            </button>
+        <div className="actions">
+          <div className="search-box">
+            <input
+              type="text"
+              placeholder="Search by name, roll no, or department..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={handleSearch}
+            />
+            <button onClick={handleSearch}>Search</button>
           </div>
-          
-          <div className="column-selector-container">
-            <button 
-              className="column-toggle-btn"
-              onClick={() => setShowColumnSelector(!showColumnSelector)}
-            >
-              <span>📋</span>
+          <div className="columns-dropdown">
+            <button onClick={() => setShowColumnSelector(!showColumnSelector)}>
               Columns
             </button>
             {showColumnSelector && (
-              <div className="column-dropdown">
+              <div className="dropdown">
                 <div className="dropdown-header">
-                  <h4>Select Columns</h4>
-                  <button 
-                    className="close-dropdown"
-                    onClick={() => setShowColumnSelector(false)}
-                  >
-                    ×
-                  </button>
+                  <strong>Select Columns</strong>
+                  <button onClick={() => setShowColumnSelector(false)}>×</button>
                 </div>
-                <div className="column-checkboxes">
+                <div className="dropdown-body">
                   {allColumns.map((col) => (
-                    <label key={col} className="column-checkbox">
+                    <label key={col}>
                       <input
                         type="checkbox"
                         checked={selectedColumns.includes(col)}
                         onChange={() => toggleColumn(col)}
                       />
-                      <span>{formatColumnName(col)}</span>
+                      {formatColumnName(col)}
                     </label>
                   ))}
                 </div>
@@ -131,59 +112,40 @@ export default function StudentProfiles() {
       </div>
 
       {loading ? (
-        <div className="loading-state">
-          <div className="loading-spinner"></div>
-          <p>Loading student profiles...</p>
-        </div>
+        <div className="loader">Loading student profiles...</div>
       ) : students.length === 0 ? (
-        <div className="empty-state">
-          <div className="empty-state-icon">👨‍🎓</div>
-          <h3>No students found</h3>
-          <p>{search ? `No results for "${search}"` : "No student profiles available"}</p>
-        </div>
+        <div className="empty">No results found.</div>
       ) : (
-        <div className="table-container">
-          <div className="table-info">
+        <div className="table-wrapper">
+          <div className="table-header">
             <span>Showing {students.length} student{students.length !== 1 ? 's' : ''}</span>
             {search && (
-              <button 
-                className="clear-search"
-                onClick={() => {
-                  setSearch("");
-                  fetchStudents();
-                }}
-              >
-                Clear search
+              <button className="clear" onClick={() => {
+                setSearch("");
+                fetchStudents();
+              }}>
+                Clear Search
               </button>
             )}
           </div>
-          <div className="table-scroll-wrapper">
-            <table className="student-profiles-table">
+          <div className="table-scroll">
+            <table>
               <thead>
                 <tr>
-                  {selectedColumns.map((col) => (
+                  {selectedColumns.map(col => (
                     <th key={col}>{formatColumnName(col)}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {students.map((student) => (
-                  <tr key={student.id} className="student-row">
-                    {selectedColumns.map((col) => (
-                      <td key={col} data-label={formatColumnName(col)}>
+                {students.map(student => (
+                  <tr key={student.id}>
+                    {selectedColumns.map(col => (
+                      <td key={col}>
                         {col === "can_apply" ? (
-                          <span className={`status-badge ${student[col] ? "status-eligible" : "status-ineligible"}`}>
+                          <span className={`badge ${student[col] ? "yes" : "no"}`}>
                             {student[col] ? "Eligible" : "Not Eligible"}
                           </span>
-                        ) : col.includes("_url") && student[col] ? (
-                          <a 
-                            href={student[col]} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="document-link"
-                          >
-                            View
-                          </a>
                         ) : (
                           formatValue(student[col])
                         )}

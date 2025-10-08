@@ -50,7 +50,7 @@ export default function VacantRooms() {
         // ✅ FIXED: Normalize room_number to remove leading zeros and ensure keys match
         const normalizedRoomNumber = String(parseInt(r.room_number, 10));
         const key = `${r.hostel}-${normalizeFloor(r.floor)}-${normalizedRoomNumber}`;
-        
+
         if (!booked[key]) booked[key] = [false, false, false, false];
         if (r.bed_number >= 1 && r.bed_number <= 4) {
           booked[key][r.bed_number - 1] = true;
@@ -158,19 +158,18 @@ export default function VacantRooms() {
                       return (
                         <span
                           key={i}
-                          className={`bed ${
-                            isAdminBed
+                          className={`bed ${isAdminBed
                               ? "admin-bed"
                               : b
-                              ? "booked"
-                              : "free"
-                          }`}
+                                ? "booked"
+                                : "free"
+                            }`}
                           title={
                             isAdminBed
                               ? `Your Bed (Bed ${i + 1})`
                               : b
-                              ? `Bed ${i + 1} Occupied`
-                              : `Bed ${i + 1} Available`
+                                ? `Bed ${i + 1} Occupied`
+                                : `Bed ${i + 1} Available`
                           }
                         >
                           {i + 1}

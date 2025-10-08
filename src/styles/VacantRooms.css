@@ -1,512 +1,245 @@
-/* src/components/admin/VacantRooms.css */
-
-.vacant-rooms-container {
+/* --- Overall Page Layout --- */
+.vacancy-page {
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background: transparent;
+  padding: 40px 60px;
+  background: linear-gradient(135deg, #eef2ff 0%, #e0f7fa 100%);
+  font-family: 'Inter', sans-serif;
+  color: #1e293b;
 }
 
-.vacant-room-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 16px;
-  margin-top: 16px;
-}
-
-.vacant-room-card {
-  background: white;
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e2e8f0;
-  transition: all 0.2s ease;
-  display: flex;
-  flex-direction: column;
-}
-
-.vacant-room-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.vacant-room-card h4 {
-  margin: 0 0 12px 0;
-  font-size: 16px;
-  color: #2d3748;
-  text-align: center;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.vacant-beds {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.vacant-bed {
-  padding: 8px 10px;
-  border-radius: 4px;
-  font-size: 12px;
-  text-align: center;
-  font-weight: 500;
-}
-
-.vacant-bed.free {
-  background-color: #c6f6d5;
-  color: #22543d;
-  border: 1px solid #9ae6b4;
-}
-
-.vacant-bed.booked {
-  background-color: #fed7d7;
-  color: #742a2a;
-  border: 1px solid #feb2b2;
-}
-
-.vacancy-info {
-  text-align: center;
-  padding-top: 8px;
-  border-top: 1px solid #e2e8f0;
-  margin-top: auto;
-}
-
-.status-pending {
-  color: #d69e2e;
-  font-weight: 600;
-}
-
-.status-rejected {
-  color: #e53e3e;
-  font-weight: 600;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .vacant-room-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 12px;
-  }
-  
-  .vacant-room-card {
-    padding: 12px;
-  }
-  
-  .vacant-beds {
-    gap: 6px;
-  }
-}
-
-/* Reuse styles from StudentRoomAllocation.css where needed */
-.vacant-rooms-container .student-details-container {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background: transparent;
-}
-
-.vacant-rooms-container .student-details-card {
-  width: 100%;
-  max-width: 1200px;
-  background: rgba(255, 255, 255, 0.92);
-  border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.vacant-rooms-container .form-content {
-  padding: 40px;
-}
-
-.vacant-rooms-container .form-intro {
+/* --- Header --- */
+.vacancy-header {
   text-align: center;
   margin-bottom: 30px;
 }
 
-.vacant-rooms-container .form-intro h2 {
-  margin: 0 0 12px 0;
-  font-size: 24px;
-  color: #1a365d;
-  font-weight: 600;
-}
-
-.vacant-rooms-container .form-intro p {
-  margin: 0;
-  color: #718096;
-  font-size: 16px;
-}
-
-.vacant-rooms-container .form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 24px;
-}
-
-.vacant-rooms-container .form-group {
-  margin-bottom: 24px;
-}
-
-.vacant-rooms-container .form-group.full-width {
-  grid-column: 1 / -1;
-}
-
-.vacant-rooms-container .form-group label {
-  display: block;
+.vacancy-header h2 {
+  font-size: 2rem;
+  color: #0f172a;
   margin-bottom: 8px;
-  font-weight: 600;
-  color: #2d3748;
-  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
-.vacant-rooms-container .select-input {
-  width: 100%;
-  padding: 14px 16px;
-  border: 2px solid #e2e8f0;
-  border-radius: 8px;
-  font-size: 16px;
-  box-sizing: border-box;
-  transition: all 0.3s ease;
-  background: rgba(255, 255, 255, 0.8);
+.vacancy-header p {
+  font-size: 1rem;
+  color: #64748b;
 }
 
-.vacant-rooms-container .select-input:focus {
-  outline: none;
-  border-color: #4299e1;
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
-}
-
-.vacant-rooms-container .loading-overlay {
+/* --- Filters --- */
+.vacancy-filters {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  padding: 60px 20px;
-  color: #718096;
+  gap: 24px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  padding: 10px 0;
+  border-radius: 12px;
 }
 
-.vacant-rooms-container .loading-overlay .spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid #e2e8f0;
-  border-top: 3px solid #4299e1;
+.filter-group label {
+  font-weight: 600;
+  color: #334155;
+  margin-right: 8px;
+}
+
+.filter-group select {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 2px solid #e2e8f0;
+  font-size: 15px;
+  color: #334155;
+  background-color: #fff;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.filter-group select:hover {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.2);
+}
+
+/* --- Loading State --- */
+.loading {
+  text-align: center;
+  margin-top: 80px;
+}
+
+.loading .spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #e2e8f0;
+  border-top: 5px solid #3b82f6;
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  margin-bottom: 16px;
+  margin: 0 auto 15px;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .vacant-rooms-container .form-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .vacant-rooms-container .student-details-card {
-    border-radius: 12px;
-  }
-  
-  .vacant-rooms-container .form-content {
-    padding: 30px 20px;
+  to {
+    transform: rotate(360deg);
   }
 }
 
-/* Room Grid Styles for Vacant Rooms */
+/* --- Room Grid --- */
 .room-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 24px;
+  padding-bottom: 60px;
+  transition: all 0.3s ease;
 }
 
+/* --- Room Card --- */
 .room-card {
-  background: white;
-  border-radius: 12px;
+  position: relative;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   border: 1px solid #e2e8f0;
-  transition: all 0.2s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  backdrop-filter: blur(6px);
+  text-align: center;
+  transition: all 0.3s ease;
+  transform: translateY(0);
 }
 
 .room-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 12px 25px rgba(59, 130, 246, 0.15);
+  border-color: #93c5fd;
 }
 
+/* --- Room Title --- */
 .room-card h4 {
-  margin: 0 0 15px 0;
-  font-size: 18px;
-  color: #2d3748;
-  text-align: center;
-  font-weight: 600;
-}
-
-.beds {
-  display: flex;
-  gap: 8px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1e40af;
   margin-bottom: 15px;
 }
 
-/* Bed styles with numbers */
+/* --- Bed Layout --- */
+.bed-status {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
 .bed {
   width: 40px;
   height: 40px;
-  border-radius: 8px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-weight: bold;
-  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .bed.free {
-  background-color: #38a169; /* Green for available beds */
-  box-shadow: 0 2px 4px rgba(56, 161, 105, 0.3);
+  background: linear-gradient(135deg, #10b981, #059669);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
 }
 
 .bed.booked {
-  background-color: #e53e3e; /* Red for occupied beds */
-  box-shadow: 0 2px 4px rgba(229, 62, 62, 0.3);
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
 }
 
-/* Room card status */
-.room-card.room-full {
-  border-left: 4px solid #e53e3e;
+.bed.admin-bed {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+  transform: scale(1.1);
 }
 
-.room-card.room-available {
-  border-left: 4px solid #38a169;
+/* --- Tooltip (hover info) --- */
+.bed[title] {
+  position: relative;
 }
 
-.vacancy-info {
-  text-align: center;
+.bed[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 130%;
+  background: rgba(30, 41, 59, 0.9);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  left: 50%;
+  opacity: 0.95;
+}
+
+/* --- Status Info --- */
+.room-info {
+  font-size: 0.95rem;
   font-weight: 600;
-  margin-top: auto;
 }
 
-.status-full {
-  color: #e53e3e;
-  font-weight: 600;
+.room-info .vacant {
+  color: #10b981;
 }
 
-.status-vacant {
-  color: #38a169;
-  font-weight: 600;
+.room-info .occupied {
+  color: #ef4444;
 }
 
-/* Legend styles */
+/* --- Legend --- */
 .legend {
   display: flex;
-  gap: 15px;
-  margin-left: 15px;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 25px;
   font-size: 14px;
-  font-weight: normal;
+  color: #475569;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
 
-.legend-color {
-  width: 12px;
-  height: 12px;
-  border-radius: 3px;
-  display: inline-block;
+.legend-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
 }
 
-.legend-color.free {
-  background-color: #38a169;
+.legend-dot.free {
+  background: #10b981;
 }
 
-.legend-color.booked {
-  background-color: #e53e3e;
+.legend-dot.booked {
+  background: #ef4444;
 }
 
-/* Responsive adjustments */
+.legend-dot.admin {
+  background: #3b82f6;
+}
+
+/* --- Responsive --- */
 @media (max-width: 768px) {
-  .room-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 15px;
+  .vacancy-page {
+    padding: 20px;
   }
-  
+
   .room-card {
     padding: 15px;
   }
-  
+
   .bed {
     width: 35px;
     height: 35px;
-    font-size: 12px;
-  }
-  
-  .legend {
-    margin-left: 0;
-    margin-top: 5px;
-    flex-direction: column;
-    gap: 5px;
-  }
-}
-
-@media (max-width: 480px) {
-  .room-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-/* Add these styles to your existing CSS file */
-
-.room-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
-}
-
-.room-card {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  border: 2px solid #e2e8f0;
-  transition: all 0.2s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.room-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-}
-
-.room-card h4 {
-  margin: 0 0 15px 0;
-  font-size: 18px;
-  color: #2d3748;
-  text-align: center;
-  font-weight: 600;
-}
-
-.beds {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 15px;
-}
-
-/* Bed styles without numbers */
-.bed {
-  width: 25px;
-  height: 25px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
-
-.bed.free {
-  background-color: #38a169; /* Green for available (vacant) beds */
-  box-shadow: 0 2px 4px rgba(56, 161, 105, 0.3);
-}
-
-.bed.booked {
-  background-color: #e53e3e; /* Red for occupied (booked) beds */
-  box-shadow: 0 2px 4px rgba(229, 62, 62, 0.3);
-}
-
-.room-card.room-available {
-  border-left: 4px solid #38a169; /* Green border for vacancy */
-}
-
-.room-card.room-full {
-  border-left: 4px solid #e53e3e; /* Red border for full */
-}
-
-.status-vacant {
-  color: #38a169;
-  font-weight: 600;
-}
-
-.status-full {
-  color: #e53e3e;
-  font-weight: 600;
-}
-
-/* Legend styles */
-.legend {
-  display: flex;
-  gap: 15px;
-  margin-left: 15px;
-  font-size: 14px;
-  font-weight: normal;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.legend-color {
-  width: 12px;
-  height: 12px;
-  border-radius: 3px;
-  display: inline-block;
-}
-
-.legend-color.free {
-  background-color: #38a169;
-}
-
-.legend-color.booked {
-  background-color: #e53e3e;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .room-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 15px;
-  }
-  
-  .room-card {
-    padding: 15px;
-  }
-  
-  .bed {
-    width: 20px;
-    height: 20px;
-  }
-  
-  .legend {
-    margin-left: 0;
-    margin-top: 5px;
-    flex-direction: column;
-    gap: 5px;
-  }
-}
-
-@media (max-width: 480px) {
-  .room-grid {
-    grid-template-columns: repeat(2, 1fr);
   }
 }

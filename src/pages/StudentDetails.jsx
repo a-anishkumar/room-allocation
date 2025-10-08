@@ -172,6 +172,7 @@ export default function StudentDetails() {
                   className={errors.department ? "error select-input" : "select-input"}
                 >
                   <option value="">Select Department</option>
+                  <option value="Computer Science and Design">Computer Science and Design</option>
                   <option value="Computer Science">Computer Science</option>
                   <option value="Information Technology">Information Technology</option>
                   <option value="Mechanical Engineering">Mechanical Engineering</option>

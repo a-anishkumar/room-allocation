@@ -37,7 +37,7 @@ body {
 }
 
 /* Form Structure */
-.student-profile-form {
+.student-profiles-form {
   display: flex;
   flex-direction: column;
   gap: 2rem;

@@ -81,15 +81,10 @@ export default function LeaveManagement() {
 
   // ✅ Update leave status (approve/reject)
   const updateLeave = async (id, status) => {
-    if (status === "approved") {
-      if (signatureUploading) {
-        setMessage("Signature upload is still in progress. Please wait.");
-        return;
-      }
-      if (!adminSignature) {
-        setMessage("Please upload your signature before approving.");
-        return;
-      }
+    // Signature is optional; allow approval without it
+    if (status === "approved" && signatureUploading) {
+      setMessage("Signature upload is still in progress. Please wait.");
+      return;
     }
 
     try {
@@ -205,28 +200,28 @@ export default function LeaveManagement() {
       {/* Stats Overview */}
       <div className="stats-section">
         <div className="stat-card">
-          <div className="stat-icon total">📋</div>
+          <div className="stat-icon total"></div>
           <div className="stat-content">
             <span className="stat-number">{stats.total}</span>
             <span className="stat-label">Total Leaves</span>
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon pending">⏳</div>
+          <div className="stat-icon pending"></div>
           <div className="stat-content">
             <span className="stat-number">{stats.pending}</span>
             <span className="stat-label">Pending</span>
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon approved">✅</div>
+          <div className="stat-icon approved"></div>
           <div className="stat-content">
             <span className="stat-number">{stats.approved}</span>
             <span className="stat-label">Approved</span>
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon rejected">❌</div>
+          <div className="stat-icon rejected"></div>
           <div className="stat-content">
             <span className="stat-number">{stats.rejected}</span>
             <span className="stat-label">Rejected</span>
@@ -337,8 +332,8 @@ export default function LeaveManagement() {
                           <button
                             onClick={() => updateLeave(leave.id, "approved")}
                             className="action-btn approve-btn"
-                            disabled={signatureUploading || !adminSignature}
-                            title={!adminSignature ? "Upload signature first" : "Approve leave"}
+                            disabled={signatureUploading}
+                            title={"Approve leave"}
                           >
                             Approve
                           </button>

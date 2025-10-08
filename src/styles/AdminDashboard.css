@@ -12,8 +12,8 @@
 
 .admin-header {
   text-align: center;
-  margin-bottom: 32px;
-  padding: 32px 24px;
+  margin-bottom: 20px;
+  padding: 24px;
   background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -43,7 +43,7 @@
   gap: 4px;
   flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
   background: #ffffff;
   padding: 6px;
   border-radius: 12px;
@@ -80,12 +80,13 @@
 /* ---------- TAB CONTENT ---------- */
 .admin-tab-content {
   background: #ffffff;
-  padding: 32px;
+  padding: 28px;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border: 1px solid #e2e8f0;
   margin-bottom: 32px;
   transition: all 0.2s ease;
+  min-height: 400px;
 }
 
 .admin-tab-content:hover {
@@ -560,4 +561,125 @@ select:focus {
 
 .loading {
   animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ---------- ADMIN TAB OVERRIDES (Keep UI clean inside card) ---------- */
+/* Leave Management within Admin Dashboard */
+.admin-tab-content .leave-management-container {
+  padding: 0;
+  background: transparent;
+  min-height: auto;
+}
+
+.admin-tab-content .leave-management-header {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 0 16px 0 !important;
+  margin-bottom: 20px !important;
+}
+
+.admin-tab-content .signature-section,
+.admin-tab-content .filters-section {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 0 16px 0 !important;
+  margin-bottom: 16px !important;
+}
+
+.admin-tab-content .leaves-table-container,
+.admin-tab-content .loading-state,
+.admin-tab-content .empty-state {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.admin-tab-content .stats-section {
+  margin-bottom: 20px !important;
+}
+
+/* Feedback Management within Admin Dashboard */
+.admin-tab-content .feedback-management-container {
+  padding: 0;
+  background: transparent;
+  min-height: auto;
+}
+
+.admin-tab-content .feedback-header {
+  margin-bottom: 20px !important;
+  padding-bottom: 12px !important;
+}
+
+.admin-tab-content .feedback-controls {
+  margin-bottom: 20px !important;
+}
+
+.admin-tab-content .feedback-table-container,
+.admin-tab-content .loading-state,
+.admin-tab-content .empty-state {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Student Profiles within Admin Dashboard */
+.admin-tab-content .student-profiles-container {
+  padding: 0;
+  background: transparent;
+  min-height: auto;
+}
+
+.admin-tab-content .student-profiles-header {
+  margin-bottom: 20px;
+}
+
+.admin-tab-content .controls-section {
+  margin-bottom: 16px;
+}
+
+/* Room Requests within Admin Dashboard */
+.admin-tab-content .room-requests-header {
+  margin-bottom: 20px !important;
+}
+
+/* Vacancy (Vacant Rooms) within Admin Dashboard */
+.admin-tab-content .vacancy-page {
+  padding: 0;
+  background: transparent;
+  min-height: auto;
+}
+
+.admin-tab-content .vacancy-header {
+  margin-bottom: 20px;
+}
+
+.admin-tab-content .vacancy-filters {
+  margin-bottom: 20px;
+}
+
+.admin-tab-content .room-grid .room-card {
+  border-width: 1px;
+  padding: 12px;
+}
+
+/* Menu Editor within Admin Dashboard */
+.admin-tab-content .menu-editor {
+  padding: 0;
+}
+
+.admin-tab-content .menu-editor h2 {
+  margin: 0 0 16px 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.admin-tab-content .days-selector {
+  margin-bottom: 20px !important;
 }
